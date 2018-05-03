@@ -1,0 +1,26 @@
+{
+  "name": "Plan",
+  "base": "Model",
+  "idInjection": false,
+  "properties": {},
+  "methods": {
+    "estimate": {
+      "isStatic": true,
+      "accepts": [
+        { "arg": "deposit", "type": "number", "http": { "source": "query" }, "required": true },
+        { "arg": "rate",    "type": "number", "http": { "source": "query" }, "required": true },
+        { "arg": "years",   "type": "number", "http": { "source": "query" }, "required": true }
+      ],
+      "returns": { "arg": "balance", "type": "number" },
+      "http": { "path": "/estimate", "verb": "get" }
+    },
+    "estimateJSON": {
+      "isStatic": true,
+      "accepts": [
+        { "arg": "plan",    "type": "object", "http": { "source": "body" } }
+      ],
+      "returns": { "arg": "balance", "type": "number" },
+      "http": { "path": "/estimate", "verb": "post" }
+    }
+  }
+}

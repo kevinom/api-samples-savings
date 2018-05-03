@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Savings Plan REST sample application</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="style.css" />
+</head>
+<script type="text/javascript" >
+  function setText(id, msg) {
+		document.getElementById(id).innerHTML = msg;
+	} // setText
+
+	function validateForm() {
+	  var deposit = document.getElementById("deposit").value;
+		var rate = document.getElementById("rate").value;
+		var years = document.getElementById("years").value;
+		var validform = true;
+
+		setText("deposit-msg", "");
+		setText("rate-msg", "");
+		setText("years-msg", "");
+
+		if ( deposit == null || Number.isNaN(deposit) || deposit < 0 ) {
+			setText("deposit-msg", "Deposit must be a number greater than zero.");
+			validform = false;
+		}
+
+		if ( rate == null || Number.isNaN(rate) || rate < 0 || rate > 1 ) {
+			setText("rate-msg", "For example, enter 0.04 for a 4% interest rate.");
+			validform = false;;
+		}
+
+		if ( years == null || Number.isNaN(years) || years < 0 ) {
+			setText("years-msg", "Number of years must be a number greater than zero.");
+			validform = false;
+		}
+
+		if ( validform ) {
+			getEstimate(deposit, rate, years);
+	  }
+
+		return false;
+	} // validateForm
+
+	function getEstimate(deposit, rate, years) {
+		var xmlhttp = new XMLHttpRequest();
+		var url =
+			"http://savingsample.mybluemix.net/api/Plans/estimate?" +
+			"deposit=" + deposit + "&rate=" + rate + "&years=" + years;
+		xmlhttp.open("GET", url, true);
+
+		// Event handler to output API response message
+		xmlhttp.onreadystatechange = function () {
+			if (xmlhttp.readyState == 4) {
+				if (xmlhttp.status == 200) {
+					var result = JSON.parse(xmlhttp.responseText);
+					setText(
+						"result-msg",
+						"The balance is " + result.balance +
+						" after investing " + deposit + " per year over " + years +
+						" year" + (years > 1? "s" : "") +
+						" at an annual interest rate of " + (rate*100) + "%."
+					);
+				} else if (xmlhttp.status > 399 && xmlhttp.status < 600){
+					setText(
+						"result-msg",
+						"HTTP status code " + xmlhttp.status + " from API operation."
+					);
+				}
+			}
+		};
+		setText(
+			"viewsource-msg",
+			"<a href = \"" + url + "\">View API response message<\/a>"
+		);
+
+		// Set headers and send API request message
+		xmlhttp.setRequestHeader("Content-Type", "application/json");
+		xmlhttp.send();
+	} //getEstimate
+</script>
+<body>
+	<table>
+		<tr>
+			<td style='width: 30%;'><img class = "newappIcon" src='images/newapp-icon.png' alt="New application icon">
+			</td>
+			<td>
+				<h1 id = "message">Welcome to the Savings Plan REST API application</h1>
+				<p>This application hosts a sample REST API that is written in the LoopBack API framework.</p>
+				<p>The <b>GET</b> and <b>POST /Plans/estimate</b> operations calculate the savings account
+					 balance for a fixed interest rate and annual deposits over a number of years.</p>
+				<p>Download the API interface as an <a href="savings_1.0.0.yaml">OpenAPI definition</a> file.</p>
+				<form id="test-form">
+					<p>How much will you deposit at the end of each year?</p>
+					<input type="number" id="deposit" name="deposit"></input>&nbsp;
+					<span id="deposit-msg"></span>
+					<p>What is the annual interest rate?</p>
+					<input type="number" id="rate" name="rate"></input>&nbsp;
+					<span id="rate-msg"></span>
+					<p>How many years do you want to invest your savings?</p>
+					<input type="number" id="years" name="years"></input>&nbsp;
+					<span id="years-msg"></span>
+					<p><input type="button" value="Calculate" onclick="validateForm()"></input></p>
+				</form>
+				<p id="result-msg"></p>
+				<p id="viewsource-msg"></p>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

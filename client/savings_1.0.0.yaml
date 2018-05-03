@@ -1,0 +1,118 @@
+swagger: '2.0'
+info:
+  x-ibm-name: savings
+  title: savings
+  version: 1.0.0
+  description: Savings plan estimator to calculate growth from compound interest
+schemes:
+  - https
+host: $(catalog.host)
+basePath: /savings
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions: {}
+security: []
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: true
+  assembly:
+    execute:
+      - operation-switch:
+          title: operation-switch
+          case:
+            - operations:
+                - verb: get
+                  path: /Plans/estimate
+              execute:
+                - invoke:
+                    target-url: >-
+                      http://savingsample.mybluemix.net/api/$(api.operation.path)?$(request.querystring)
+            - operations:
+                - verb: post
+                  path: /Plans/estimate
+              execute:
+                - invoke:
+                    title: invoke post
+                    timeout: 60
+                    verb: POST
+                    cache-response: protocol
+                    cache-ttl: 900
+                    target-url: >-
+                      http://savingsample.mybluemix.net/api/$(api.operation.path)
+          otherwise: []
+paths:
+  /Plans/estimate:
+    get:
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/plan-result'
+      description: Calculate savings growth with annual compounding
+      parameters:
+        - name: deposit
+          type: number
+          required: true
+          in: query
+          description: Annual deposits
+          format: float
+        - name: rate
+          type: number
+          required: true
+          in: query
+          description: Interest rate
+          format: float
+        - name: years
+          type: integer
+          required: true
+          in: query
+          description: Years of saving
+          format: int32
+      consumes: []
+    post:
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/plan-result'
+      description: Calculate savings growth with annual compounding
+      parameters:
+        - name: plan
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/plan'
+          description: Savings plan estimate
+definitions:
+  plan:
+    properties:
+      deposit:
+        type: number
+        description: Annual deposit
+        format: float
+        example: 300
+      rate:
+        type: number
+        example: 0.04
+        format: float
+        description: Interest rate
+      years:
+        type: integer
+        description: Duration in years
+        example: 20
+        format: int32
+    additionalProperties: false
+    description: Parameters for a savings plan estimate calculation
+  plan-result:
+    properties:
+      balance:
+        type: number
+        format: float
+        example: 8933.42
+        description: Account balance
+    additionalProperties: false
+tags: []
