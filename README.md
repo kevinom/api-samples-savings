@@ -1,6 +1,6 @@
 #  api-samples-savings
 ## Compound savings calculator REST API with LoopBack for IBM Cloud
-#####  8 May 2018 - warrenf
+#####  3 May 2018 - warrenf
 
 This Node.js application calculates a savings account balance, given a fixed interest rate and annual deposits. Use this application to create an endpoint for the IBM API Connect gateway.
 
