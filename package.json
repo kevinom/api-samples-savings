@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/wrrnf/api-samples-savings.git"
+    "url": "https://github.com/kevinom/api-samples-savings.git"
   },
   "engines": {
     "node": "4.x"
