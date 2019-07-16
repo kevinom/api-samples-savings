@@ -4,6 +4,8 @@
 
 This Node.js application calculates a savings account balance, given a fixed interest rate and annual deposits. Use this application to create an endpoint for the IBM API Connect gateway.
 
+Change the application name in the IBM Cloud Deploy stage to **savingsample**
+
 You can test a deployed copy of this API on IBM Cloud: https://savingsample.mybluemix.net
 
 To build and run your own copy of the `savings` application:
